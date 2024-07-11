@@ -11,12 +11,7 @@
 <p align="center">
     A modular, scalable and ultra-fast open-source all-in-one eCommerce platform built on ASP.NET Core 7.
 </p>
-<p align="center">
-	<a href="#try-it-online">Try Online</a> ∙ 
-	<a href="http://community.smartstore.com">Forum</a> ∙ 
-	<a href="http://community.smartstore.com/marketplace">Marketplace</a> ∙ 
-	<a href="http://translate.smartstore.com/">Translations</a>
-</p>
+
 <br/>
 <p align="center">
   <img src="assets/sm5-devices.png" alt="Smartstore Demoshop" />
@@ -32,12 +27,6 @@ A comprehensive set of tools for CRM & CMS, Sales, Marketing, Payment & Shipping
 
 The state-of-the-art architecture of Smartstore - with `ASP.NET Core 7`, `Entity Framework Core 7` and Domain Driven Design approach - makes it easy to extend, extremely flexible and basically fun to work with ;-)
 
-* :house: **Website:** [http://www.smartstore.com](http://www.smartstore.com)
-* :speech_balloon: **Forum:** [http://community.smartstore.com](http://community.smartstore.com)
-* :mega: **Marketplace:** [http://community.smartstore.com/marketplace](http://community.smartstore.com/marketplace)
-* :earth_americas: **Translations:** [http://translate.smartstore.com/](http://translate.smartstore.com/)
-* :blue_book: **Documentation:** [Smartstore Documentation in English](https://smartstore.atlassian.net/wiki/spaces/SMNET50/pages/1956118583/Getting+Started)
-* ▶️ **Azure Marketplace:** [https://azuremarketplace.microsoft.com](https://azuremarketplace.microsoft.com/marketplace/apps/smartstore-ag.smartstorenet?tab=Overview)
 <p>&nbsp;</p>
 
 ## Technology & Design
@@ -111,11 +100,6 @@ The state-of-the-art architecture of Smartstore - with `ASP.NET Core 7`, `Entity
 - PostgreSQL 11+
 - SQLite 3.31+
 
-### Upgrade from Smartstore.NET 4.2
-
-Smartstore 5 is a port of [Smartstore.NET 4](https://github.com/smartstore/SmartStoreNET) - based on the classic .NET Framework 4.7.2 – to the new `ASP.NET Core 7` platform. Smartstore instances based on classic `ASP.NET MVC` can be upgraded seamlessly. To [upgrade](https://smartstore.atlassian.net/wiki/spaces/SMNET50/pages/1956118609/Updating+from+Previous+Versions), all you need to do is replace the application files on your server - except for the `App_Data` directory - and **all your data will automatically be transferred to the new system**. [See the documentation for detailed information on installing or upgrading your store](https://smartstore.atlassian.net/wiki/spaces/SMNET50/pages/1956118822/Installing+Smartstore).
-
- :information_source: Upgrading from versions older than 4.2 is not possible. Therefore, you should migrate Smartstore.NET to version 4.2 first and then upgrade to Smartstore 5.
 
 ### Visual Studio
 
@@ -124,78 +108,4 @@ Smartstore 5 is a port of [Smartstore.NET 4](https://github.com/smartstore/Smart
 - Open `Smartstore.sln` and wait for Visual Studio to restore all NuGet packages
 - Make sure `Smartstore.Web` is the startup project and run it
 
-### Repository Structure
-
-- [`Smartstore`](https://github.com/smartstore/Smartstore/tree/main/src/Smartstore) contains common low-level application-agnostic stuff like bootstrapper, modularity engine, caching, pub/sub, imaging, type conversion, IO, templating, scheduling, various utilities, common extension methods etc.
-- [`Smartstore.Data`](https://github.com/smartstore/Smartstore/tree/main/src/Smartstore.Data) contains database providers
-- [`Smartstore.Core`](https://github.com/smartstore/Smartstore/tree/main/src/Smartstore.Core) contains application specific modules like catalog, checkout, identity, security, localization, logging, messaging, rules engine, search engine, theme engine, migrations etc.
-- [`Smartstore.Web.Common`](https://github.com/smartstore/Smartstore/tree/main/src/Smartstore.Web.Common) contains common web features like custom MVC infrastructure, bundling, TagHelpers, HtmlHelpers etc.
-- [`Smartstore.Modules`](https://github.com/smartstore/Smartstore/tree/main/src/Smartstore.Modules) contains all module/plugin projects
-- [`Smartstore.Web`](https://github.com/smartstore/Smartstore/tree/main/src/Smartstore.Web) is the entry host project that contains controllers, model classes, themes, static assets etc.
-
 <p>&nbsp;</p>
-
-## Build Smartstore
-
-### Option 1 - by publishing the entry host project
-
-1. Open the Smartstore solution in Visual Studio 2022
-2. Use **Release** configuration
-3. (Re)build the solution
-4. Publish host project **Smartstore.Web**
-
-### Option 2 - by running a build script
-
-Run the build script corresponding to your target platform in the **build** directory: `build.{Platform}.cmd`. The resulting build will be placed in the `build/artifacts/Community.{Version}.{Platform}` directory. A zip archive in **build/artifacts/** is created automatically.
-
-By default, the build script produces a platform-specific, self-contained application that includes the ASP.NET runtime and libraries, the Smartstore application and its dependencies. You can run it on any machine that doesn't have the .NET runtime installed.
-
-Smartstore uses Nuke (https://nuke.build/) as its build automation solution, which makes it easy to customize the build process by editing `src/Smartstore.Build/Smartstore.Build/Build.cs`.
-
-### About the "src/Smartstore.Web/Modules" directory
-
-While building the solution, all modules in `src/Smartstore.Modules/` are detected, compiled and placed in the `src/Smartstore.Web/Modules/` directory. The application runtime uses this directory as a source from which modules are 
-loaded dynamically. During development, however, the "Modules" directory is irrelevant. You can safely delete it at any time.
-
-### Creating Docker images
-
-To create a Docker image, run `build/dockerize.{Platform}[.nobuild].sh`.
-
-##### dockerize.linux.sh
-
-Creates a Debian Linux base image including the complete ASP.NET runtime, builds the solution and publishes a framework-dependent application inside the Linux container. It also installs the native **wkhtmltopdf** library needed to generate PDF files.
-
-##### dockerize.linux.nobuild.sh
-
-Much faster, but requires that the application has already been built and is located in `build/artifacts/Community.{Version}.linux-x64`. Creates a Debian Linux base image with only the ASP.NET runtime dependencies and copies the build artifact. It also installs the native **wkhtmltopdf** library needed to generate PDF files.
-
-##### dockerize.windows.nobuild.sh
-
-Creates a Windows Nano Server base image with only the ASP.NET runtime dependencies and copies the build artifact. Requires that the application has already been built and is located in `build/artifacts/Community.{Version}.win-x64`. It also requires that the Docker engine is running a Windows image.
-
-### Creating Docker containers
-
-To create a ready-to-run Docker container with a database server run `compose.{DbSystem}.sh`. 
-
-##### compose.mysql.sh
-
-Creates a composite Docker container containing the **smartstore** application image and the latest **MySql** image.
-
-##### compose.sqlserver.sh
-
-Creates a composite Docker container containing the **smartstore** application image and the latest **MS SQL Server** image.
-<p>&nbsp;</p>
-
-## Try it online
-
-We have set up a live online demo for you to test Smartstore without a local installation. Get a first impression and test all available features in the frontend and backend. Please note that the backend demo is shared and other testers can modify data at the same time.
-
-* [**Frontend**](https://core.smartstore.com/frontend/en) (User: demo, PWD: 1234)
-* [**Backend**](https://core.smartstore.com/backend/admin/) (User: demo, PWD: 1234)
-<p>&nbsp;</p>
-
-## License
-
-Smartstore Community Edition is released under the [AGPL license](https://www.gnu.org/licenses/agpl-3.0.de.html).
-
-**Add a star to our new repository** to stay up-to-date, get involved or just watch how we're doing. Learn about the latest developments, actively participate and don't miss out on new releases.
